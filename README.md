@@ -11,7 +11,7 @@ See nRF sniffer documentation for supported hardware and how to flash the firmwa
 Installing nrf-sniffer-cli and its dependencies:
 
 ```
-$ pip install git+https://github.com/mkarhumaa/nrf-sniffer-cli.git
+$ pip install git+https://github.com/embedded-community/nrf-sniffer-cli.git
 ```
 
 To start sniffing plug in the sniffer dongle and first scan for advertising devices.

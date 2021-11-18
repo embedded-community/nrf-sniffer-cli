@@ -37,6 +37,7 @@ import argparse
 import time
 from SnifferAPI import Sniffer, UART
 
+
 def setup(capture_file):
     ports = UART.find_sniffer()
 
@@ -104,11 +105,18 @@ def loop(sniffer):
 
 def main():
     parser = argparse.ArgumentParser(description='Sniff Bluetooth LE traffic over the air.')
-    parser.add_argument('--scan', '-s',
+    parser.add_argument('--scan', '-sc',
                         action='store_true',
                         required=False,
                         dest='scan',
-                        help='Scans for devices and outputs list of address/name pairs of advertising Bluetooth LE devices.')
+                        help='Scans for devices and outputs list of address/name pairs of advertising Bluetooth LE '
+                             'devices. Also saves the advertising packets to the capture file.')
+    parser.add_argument('--sniff', '-sn',
+                        action='store_true',
+                        required=False,
+                        dest='sniff',
+                        help='Start sniffing a Bluetooth LE device. Sniffing requires either --address or --name to '
+                             'be given. Saves the captured packets to capture file')
     parser.add_argument('--address', '-a',
                         type=str,
                         required=False,
@@ -123,11 +131,18 @@ def main():
                         type=str,
                         required=False,
                         dest='capture_file',
-                        help='Name of the file where the sniffer writes the captured Bluetooth LE packets. The file can be opened with Wireshark.',
+                        help='Name of the file where the sniffer writes the captured Bluetooth LE packets. The file '
+                             'can be opened with Wireshark.',
                         default='capture.pcap')
     args = parser.parse_args()
-    if args.scan is False and args.address is None and args.name is None:
-        parser.error('Either scan, address or name argument must be given.')
+    if not args.scan and not args.sniff or args.scan and args.sniff:
+        parser.error('Either --scan or --sniff must be given.')
+
+    if args.scan and (args.name or args.address):
+        parser.error('--name and --address are needed only with --sniff argument.')
+
+    if args.sniff and not args.address and not args.name or args.sniff and args.address and args.name:
+        parser.error('To be able to start sniffing either --address or --name argument must be given.')
 
     sniffer = setup(args.capture_file)
 
