@@ -1,3 +1,4 @@
+name: nrf-sniffer-cli
 on:
   push:
     branches: [main]
@@ -30,7 +31,7 @@ jobs:
       - name: run tests
         run: python -m pytest --cov SnifferAPI --cov-report=html .
       - name: pylint (always pass)
-        run: pylint --exit-zero SinfferAPI
+        run: pylint --exit-zero SnifferAPI
       - name: Archive code coverage results
         uses: actions/upload-artifact@v2
         with:
