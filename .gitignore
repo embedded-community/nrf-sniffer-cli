@@ -1,0 +1,6 @@
+/.coverage
+/.eggs
+nrf_sniffer_cli.egg-info
+htmlcov
+dist
+build
