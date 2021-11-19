@@ -16,25 +16,25 @@ $ pip install git+https://github.com/embedded-community/nrf-sniffer-cli.git
 
 To start sniffing plug in the sniffer dongle and first scan for advertising devices.
 ```
-$ nrf-sniffer-cli --scan
+$ nrf-sniffer-cli scan
 ```
 
 Then select the device you are interested in sniffing and start the sniffer:
 
 ```
-$ nrf-sniffer-cli --address 001122334455
+$ nrf-sniffer-cli sniff --address 001122334455
 ```
 
 Or by name:
 
 ```
-$ nrf-sniffer-cli --name example-name
+$ nrf-sniffer-cli sniff --name example-name
 ```
 
 By default, the sniffer will write the captured packets to `capture.pcap` file. This is configurable with:
 
 ```
-$ nrf-sniffer-cli --name example-name --capture-file example-capture.pcap
+$ nrf-sniffer-cli --capture-file example-capture.pcap sniff --name example-name
 ```
 
 Sniffer can be stopped using ctrl+c.

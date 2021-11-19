@@ -105,24 +105,19 @@ def loop(sniffer):
 
 def main():
     parser = argparse.ArgumentParser(description='Sniff Bluetooth LE traffic over the air.')
-    parser.add_argument('--scan', '-sc',
-                        action='store_true',
-                        required=False,
-                        dest='scan',
-                        help='Scans for devices and outputs list of address/name pairs of advertising Bluetooth LE '
-                             'devices. Also saves the advertising packets to the capture file.')
-    parser.add_argument('--sniff', '-sn',
-                        action='store_true',
-                        required=False,
-                        dest='sniff',
-                        help='Start sniffing a Bluetooth LE device. Sniffing requires either --address or --name to '
-                             'be given. Saves the captured packets to capture file')
-    parser.add_argument('--address', '-a',
+    subparsers = parser.add_subparsers(dest='command', required=True)
+    sniff_parser = subparsers.add_parser('sniff', help='Start sniffing a Bluetooth LE device. Sniffing requires either '
+                                                       '--address or --name to be given. Saves the captured packets to '
+                                                       'capture file')
+    subparsers.add_parser('scan', help='Scans for devices and outputs list of address/name pairs of advertising '
+                                       'Bluetooth LE devices. Also saves the advertising packets to the capture file.')
+    group = sniff_parser.add_mutually_exclusive_group(required=True)
+    group.add_argument('--address', '-a',
                         type=str,
                         required=False,
                         dest='address',
                         help='Start sniffing the Bluetooth LE device by address.')
-    parser.add_argument('--name', '-n',
+    group.add_argument('--name', '-n',
                         type=str,
                         required=False,
                         dest='name',
@@ -135,21 +130,13 @@ def main():
                              'can be opened with Wireshark.',
                         default='capture.pcap')
     args = parser.parse_args()
-    if not args.scan and not args.sniff or args.scan and args.sniff:
-        parser.error('Either --scan or --sniff must be given.')
-
-    if args.scan and (args.name or args.address):
-        parser.error('--name and --address are needed only with --sniff argument.')
-
-    if args.sniff and not args.address and not args.name or args.sniff and args.address and args.name:
-        parser.error('To be able to start sniffing either --address or --name argument must be given.')
 
     sniffer = setup(args.capture_file)
 
     if not sniffer:
         return
 
-    if args.scan:
+    if args.command == 'scan':
         devices = scan(sniffer, 5)
         for dev in devices.asList():
             address = _address_to_string(dev)
