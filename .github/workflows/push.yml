@@ -1,0 +1,60 @@
+name: nrf-sniffer-cli
+on:
+  push:
+    branches: [main]
+    paths-ignore: ['**.md']
+  pull_request:
+    paths-ignore: ['**.md']
+  schedule:
+    - cron: 30 3 * * *
+  release:
+    types: [ created ]
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ['3.7', '3.8', '3.8', '3.9', '3.10']
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: install dependencies
+        run: |
+          pip install .
+          pip install .[dev]
+      - name: run tests
+        run: python -m pytest --cov SnifferAPI --cov-report=html .
+      - name: pylint (always pass)
+        run: pylint --exit-zero SnifferAPI
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v2
+        with:
+          name: code-coverage-report
+          path: htmlcov/*
+
+  publish:
+    needs: [test]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release' && github.event.action == 'created'
+    steps:
+      - uses: actions/setup-python@v2
+      - name: Install dependencies
+        run: |
+          pip install .
+          pip install setuptools wheel twine
+      - name: create packages
+        run: |
+          python setup.py sdist
+          python setup.py bdist_wheel
+      - name: publish to pypi
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+        run: |
+          twine upload dist/*

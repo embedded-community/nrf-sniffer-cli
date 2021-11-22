@@ -21,16 +21,15 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='nrf-sniffer-cli',
-    version='0.0.1',
+    use_scm_version=True,
+    setup_requires=["setuptools_scm"],
     description='Python libraries for nRF Sniffer',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    url='https://github.com/mkarhumaa/nrf-sniffer-cli',
+    url='https://github.com/embedded-community/nrf-sniffer-cli',
     author='Matias Karhumaa',
     author_email='matias.karhumaa@gmail.com',
-
     # Classifiers help users find your project by categorizing it.
-    #
     # For a list of valid classifiers, see https://pypi.org/classifiers/
     classifiers=[  # Optional
         'Development Status :: 3 - Alpha',
@@ -40,22 +39,24 @@ setup(
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
     ],
+    keywords="ble sniffer bluetooth",
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),  # Required
-
     entry_points={
         'console_scripts': [
             'nrf-sniffer-cli = cli.app:main'
         ]
     },
-
-    python_requires='>=3.7, <3.10',
+    python_requires='>=3.7, <=3.10',
     install_requires=[
         'pyserial>=3.4',
         'psutil'
     ],
-
+    extras_require={
+        'dev': ['pytest', 'pytest-cov', 'pylint', 'coverage', 'mock']
+    },
     project_urls={  # Optional
-        'Source': 'https://github.com/mkarhumaa/nrf-sniffer-cli',
+        'Source': 'https://github.com/embedded-community/nrf-sniffer-cli',
     }
 )
