@@ -45,7 +45,7 @@ setup(
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),  # Required
     entry_points={
         'console_scripts': [
-            'nrf-sniffer-cli = cli.app:main'
+            'nrf-sniffer-cli = SnifferAPI.cli:main'
         ]
     },
     python_requires='>=3.7, <=3.10',
