@@ -48,7 +48,7 @@ setup(
             'nrf-sniffer-cli = SnifferAPI.cli:main'
         ]
     },
-    python_requires='>=3.7, <=3.10',
+    python_requires='>=3.7, <=3.11',
     install_requires=[
         'pyserial>=3.4',
         'psutil'
