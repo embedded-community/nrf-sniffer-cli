@@ -52,10 +52,6 @@ def initLog():
     logging.info("Software version: " + VERSION_STRING)
 
 
-initLog()
-
-
-
 import sys, os, threading
 from . import SnifferCollector
 
@@ -65,6 +61,7 @@ class Sniffer(threading.Thread, SnifferCollector.SnifferCollector):
     # the software will try to locate the firwmare automatically (may take time).
     # NOTE: portnum is 0-indexed, while Windows names are 1-indexed
     def __init__(self, portnum=None, baudrate=UART.SNIFFER_OLD_DEFAULT_BAUDRATE, **kwargs):
+        initLog()
         threading.Thread.__init__(self)
         SnifferCollector.SnifferCollector.__init__(self, portnum, baudrate=baudrate, **kwargs)
         self.daemon = True
