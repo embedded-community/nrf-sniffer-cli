@@ -217,7 +217,6 @@ def list_serial_ports():
     # Scan for available ports.
     return list_ports.comports()
 
-
 if __name__ == "__main__":
     import time
     t_start = time.time()
