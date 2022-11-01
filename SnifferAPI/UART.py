@@ -140,7 +140,7 @@ class Uart:
 
         self.worker_thread = Thread(target=self._read_worker)
         self.reading = True
-        self.worker_thread.setDaemon(True)
+        self.worker_thread.daemon = True
         self.worker_thread.start()
 
     def _read_worker(self):
