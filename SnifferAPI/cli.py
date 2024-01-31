@@ -35,7 +35,7 @@
 # OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import argparse
 import time
-from SnifferAPI import Sniffer, UART
+from SnifferAPI import Sniffer, UART, Devices
 
 
 def setup(capture_file):
@@ -78,8 +78,10 @@ def _find_device_by_address(devices, address):
             return device
 
 
-def follow(sniffer, device):
+def follow(sniffer, device, irk=None):
     sniffer.follow(device)
+    if irk is not None:
+        sniffer.sendIRK(irk)
     loop(sniffer)
 
 
@@ -117,6 +119,11 @@ def main():
                         required=False,
                         dest='address',
                         help='Start sniffing the Bluetooth LE device by address.')
+    group.add_argument('--irk',
+                        type=str,
+                        required=False,
+                        dest='irk',
+                        help='Start sniffing the Bluetooth LE device by IRK. Expects big-endian, hexadecimal format.')
     group.add_argument('--name', '-n',
                         type=str,
                         required=False,
@@ -142,15 +149,31 @@ def main():
             address = _address_to_string(dev)
             name = dev.name.replace('"', '')
             print(f'{address} {name}')
-
+    elif args.command == 'sniff':
+        if args.irk is None:
+            device = scan(sniffer, 5, args.address, args.name)
+            follow(sniffer, device)
+        else:
+            sniffer.scan()
+            device = Devices.Device(address=[], name='""', RSSI=0)
+            follow(sniffer, device, _hex_to_byte_list(args.irk))
     else:
-        device = scan(sniffer, 5, args.address, args.name)
-        follow(sniffer, device)
-        loop(sniffer)
+        raise AssertionError(f'Unknown command: {args.command}')
 
 
 def _address_to_string(dev):
     return ''.join('%02x' % b for b in dev.address[:6])
+
+
+def _hex_to_byte_list(value):
+    if value.startswith('0x'):
+        value = value[2:]
+
+    if len(value) % 2 != 0:
+        value = '0' + value
+
+    a = list(value)
+    return [int(x + y, 16) for x, y in zip(a[::2], a[1::2])]
 
 
 if __name__ == "__main__":
