@@ -33,6 +33,7 @@ jobs:
       - name: pylint (always pass)
         run: pylint --exit-zero SnifferAPI
       - name: Archive code coverage results
+        if: matrix.python-version == '3.12' && matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v4
         with:
           name: code-coverage-report
