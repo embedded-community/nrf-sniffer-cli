@@ -36,10 +36,11 @@ setup(
         # Indicate who your project is intended for
         'Intended Audience :: Developers',
         'Topic :: Software Development :: Build Tools',
-        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
     ],
     keywords="ble sniffer bluetooth",
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),  # Required
@@ -48,7 +49,7 @@ setup(
             'nrf-sniffer-cli = SnifferAPI.cli:main'
         ]
     },
-    python_requires='>=3.7, <=3.11',
+    python_requires='>=3.7, <=3.12',
     install_requires=[
         'pyserial>=3.4',
         'psutil'
