@@ -43,6 +43,11 @@ jobs:
     needs: [test]
     runs-on: ubuntu-latest
     if: github.event_name == 'release' && github.event.action == 'created'
+    # Specifying a GitHub environment is optional, but strongly encouraged
+    environment: release
+    permissions:
+      # IMPORTANT: this permission is mandatory for trusted publishing
+      id-token: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -56,9 +61,5 @@ jobs:
         run: |
           python setup.py sdist
           python setup.py bdist_wheel
-      - name: publish to pypi
-        env:
-          TWINE_USERNAME: __token__
-          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-        run: |
-          twine upload dist/*
+      - name: Publish package distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
